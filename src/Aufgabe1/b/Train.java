@@ -2,7 +2,7 @@ package Aufgabe1.b;
 
 import java.util.concurrent.Semaphore;
 
-public class Train extends Aufgabe1.Train {
+public class Train extends Aufgabe1.TrainDraftForBothExercises {
 
     public Semaphore privateSemaphore = new Semaphore(0, true);
     private Semaphore mutexAccessOfSharedArea;
