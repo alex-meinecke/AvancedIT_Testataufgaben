@@ -5,7 +5,7 @@ Email: alexandermeinecke@icloud.com
 # Disclaimer
 Die Implementation ist ausführlich kommentiert.
 Um die eigentlichen Besonderheiten der jeweiligen Implementierungen hervorzuheben,
-wurde eine abstrakte Klasse 'TrainDraftForBothExercises' angelegt. 
+wurde eine abstrakte Klasse 'TrainDraftForBothExercises' angelegt, in der die in der Aufgabenstellung beschriebenen Eigenschaften für Lok0 und Lok1 auszulagern. 
 Die jeweiligen Lösungen für a) und b) befinden in den gleichnamigen Paketen.
 
 # Aufgabe 1a
@@ -140,3 +140,4 @@ Nach dem Start ist Lok1 wie zu erwarten als erste an der Weiche. Sie darf trotzd
 Erst nachdem Lok0 einmal Lok1 die nächste Durchfahrtsberechtigung gegeben hat (siehe [2]) und auch den kritischen Abschnitt freigegeben hat, kann Lok1 ihre Fahrt in den kritischen Abschnitt starten (siehe [3]).
 
 # Aufgabe 1b
+

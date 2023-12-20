@@ -2,18 +2,18 @@ package Aufgabe1.b;
 
 import java.util.concurrent.Semaphore;
 
-public class Train extends Aufgabe1.TrainDraftForBothExercises {
+public class TrainOld extends Aufgabe1.TrainDraftForBothExercises {
 
     public Semaphore privateSemaphore = new Semaphore(0, true);
     private Semaphore mutexAccessOfSharedArea;
     private Boolean isWaitingToEnterSharedArea = false;
     private Boolean isSharedAreaBusy;
-    Train[] trains;
+    TrainOld[] trains;
     private Integer partnerTrainID;
 
     private Integer numberOfSuccessfulRuns = 0;
 
-    public Train(Integer trainId, Semaphore mutexAccessOfSharedArea, Boolean isSharedAreaBusy, Train[] trains) {
+    public TrainOld(Integer trainId, Semaphore mutexAccessOfSharedArea, Boolean isSharedAreaBusy, TrainOld[] trains) {
         super(trainId);
 
         this.mutexAccessOfSharedArea = mutexAccessOfSharedArea;
@@ -56,7 +56,7 @@ public class Train extends Aufgabe1.TrainDraftForBothExercises {
 
             if (trains[partnerTrainID].isWaitingToEnterSharedArea) {
                 trains[partnerTrainID].isWaitingToEnterSharedArea = false;
-                System.out.println("Partnerzug gibt ZUg frei:" + partnerTrainID);
+                System.out.println("Partnerzug gibt Zug frei :" + partnerTrainID);
                 trains[partnerTrainID].privateSemaphore.release();
             } else {
                 isSharedAreaBusy = false;
