@@ -25,15 +25,17 @@ public class TrackMangerCreatorConsumerProblem {
 
         /*
             Testfall 2: Lok0 ist schneller mit privater Strecke
-            train0.setTimeToPassPrivateTrainTrackInSeconds(5);
+            train0.setTimeToPassPrivateTrainTrackInSeconds(2);
             train1.setTimeToPassPrivateTrainTrackInSeconds(10);
         */
 
         /*
             Testfall 3: Lok1 ist schneller mit privater Strecke
             train0.setTimeToPassPrivateTrainTrackInSeconds(10);
-            train1.setTimeToPassPrivateTrainTrackInSeconds(5);
+            train1.setTimeToPassPrivateTrainTrackInSeconds(2);
         */
+        train0.setTimeToPassPrivateTrainTrackInSeconds(10);
+        train1.setTimeToPassPrivateTrainTrackInSeconds(2);
 
         /*
             Testfall 4 (optional): Geschwindigkeiten und Streckenläge dem Zufall überlassen
