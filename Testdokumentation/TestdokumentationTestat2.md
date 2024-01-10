@@ -6,7 +6,7 @@ Email: alexandermeinecke@icloud.com
 
 Die Implementation ist ausführlich kommentiert. Um den Code zu testen, bitte Folgendes beachten:
 
-- Ich schreibe die Nachrichten in einen Ordner auf meinem Desktop (wie in der Vorlesung besprochen). In der Serverklasse findet sich eine statische Variable namens 'PATH_FOR_MESSAGE_FILE'. Bitte geben Sie dort das Verzeichnis an, in das geschrieben werden soll. Sollte das nicht passieren, gibt es aber in der Console noch einen Hinweis. Alternativ können Sie, wenn sie nur den Bytecode ausführen wollen, den path als Parameter (in "") beim Starten übergeben.
+- Ich schreibe die Nachrichten in einen Ordner auf meinem Desktop (wie in der Vorlesung besprochen). In der Serverklasse findet sich eine statische Variable namens 'PATH_FOR_MESSAGE_FILE'. Bitte geben Sie dort das Verzeichnis an, in das geschrieben werden soll. Sollte das nicht passieren, gibt es aber in der Console noch einen Hinweis. Alternativ können Sie, wenn sie nur den Bytecode ausführen wollen, den path als Parameter beim Starten übergeben. Hier ein Beispiel:  ```java Aufgabe2.Server /Users/I569702/Desktop/message_folder2/```
 - Intellij generiert statt "class"-Ordner "out"-Ordner. Ich habe trotzdem ein "class"-Ordner erstellt und die Dateien manuell reinkopiert, um die Verzeichnisse, wie sie in der Aufgabenstellung vorgesehen sind, abzugeben.
 
 ## Testfälle
