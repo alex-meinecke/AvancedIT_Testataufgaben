@@ -25,7 +25,7 @@ public class Server {
 
     // (Mein persönlicher) Path definiert. => Wie empfohlen auf dem Desktop
     // Achtung: Für die Überprüfung muss dieser natürlich geändert werden!
-    private static String PATH_FOR_MESSAGE_FILE = "/Users/I569702/Desktop/message_folder/";
+    private static String PATH_FOR_MESSAGE_FILE = "/Users/I569702/Desktop/message_folder2/";
 
     public static void main(String[] args) {
         // Wenn Sie ihren eigenen Ordner erstellt haben, bitte das Verzeichnis eingeben als erster Parameter in der Console eingeben.
@@ -39,6 +39,7 @@ public class Server {
             // Server einmalig starten
             System.out.println("Starting Server");
             serverSocket = new ServerSocket(PORT);
+
             while (true) {
                 try {
                     // Warten, bis sich der Client verbindet

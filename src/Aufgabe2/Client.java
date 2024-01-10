@@ -17,6 +17,14 @@ public class Client {
         //Der Client wird immer wieder versuchen, sich neu zu Verbinden
         while (true){
             try {
+                // Als erstes auf die Usereingabe warten, damit Server nicht unnötig blockiert wird
+                // Consoleninputstream für Befehlseingaben wird via einen InputStreamReader als BufferedReader lesbar gemacht
+                BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+
+                // Warten auf eine Consoleneingabe für Weiterverarbeitung
+                System.out.println("Please enter your command ...");
+                String currentLine = userInput.readLine();
+
                 // Versuch eines Verbindungsaufbaus
                 System.out.println("Client is trying to connect server " + HOST + ":" + Server.PORT);
                 serverSocket = new Socket(HOST, Server.PORT);
@@ -27,13 +35,6 @@ public class Client {
                 // Input-Reader wird mit dem Serverinputstream verbunden
                 BufferedInputStream inputStream = new BufferedInputStream(serverSocket.getInputStream());
                 reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                // Consoleninputstream für Befehlseingaben wird via einen InputStreamReader als BufferedReader lesbar gemacht
-                BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-
-                // Warten auf eine Consoleneingabe für Weiterverarbeitung
-                System.out.println("Please enter your command ...");
-                String currentLine = userInput.readLine();
 
                 // Abschicken der Nachricht
                 output.println(currentLine);

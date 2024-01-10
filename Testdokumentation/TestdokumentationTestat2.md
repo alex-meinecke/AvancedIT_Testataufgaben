@@ -22,12 +22,11 @@ Der folgende Testfall soll folgendes zeigen:
 
 Von der Clientseite folgendermaßen:
 ```
-Client is trying to connect server localhost:7777
 Please enter your command ...
 SAVE Ich bin eine Testnachricht :)
+Client is trying to connect server localhost:7777
 Message "SAVE Ich bin eine Testnachricht :)" submitted
 Server responded: KEY 995349111
-Client trying to connect server localhost:7777
 Please enter your command ...
 ```
 Nachdem sich der Client verbunden hat, darf er einen Befehl eingeben. Nachdem er "SAVE Ich bin eine Testnachricht :)" übergeben hat und der Server mit dem Key geantwortet hat, versucht er sich wieder mit dem Server zu verbinden, schafft es und erwartet die nächste Anfrage. Dies deutet darauf hin, dass der Server non-persistent ist, da er die Verbindung abgebrochen hat, nach dem er das Ergebnis übermittelt hat.  
@@ -56,12 +55,11 @@ Der folgende Testfall soll folgendes zeigen:
 
 Von der Clientseite folgendermaßen:
 ```
-Client is trying to connect server localhost:7777
 Please enter your command ...
 GET 995349111
+Client is trying to connect server localhost:7777
 Message "GET 995349111" submitted
 Server responded: OK Ich bin eine Testnachricht :)
-Client trying to connect server localhost:7777
 Please enter your command ...
 ```
 Die Antwort wie erwartet: OK + die Nachricht.
@@ -85,12 +83,11 @@ Der folgende Testfall soll folgendes zeigen:
 
 Von der Clientseite folgendermaßen:
 ```
-Client is trying to connect server localhost:7777
 Please enter your command ...
 GET 123456
+Client is trying to connect server localhost:7777
 Message "GET 123456" submitted
 Server responded: FAILED
-Client trying to connect server localhost:7777
 Please enter your command ...
 ```
 Antwort ist FAILED.
@@ -114,8 +111,9 @@ Der folgende Testfall soll folgendes zeigen:
 
 Von der Clientseite folgendermaßen (Ausfall "simulieren"):
 ```
-Client trying to connect server localhost:7777
 Please enter your command ...
+SAVE Eine Nachricht
+Client is trying to connect server localhost:7777
 
 Process finished with exit code 130 (interrupted by signal 2:SIGINT)
 ```
@@ -143,12 +141,11 @@ Dies war nicht umbedingt in der Aufgabe vorausgesetzt, aber meiner Meinung nach 
 
 Von der Clientseite folgendermaßen:
 ```
-Client is trying to connect server localhost:7777
 Please enter your command ...
 back mir eine Pizza
+Client is trying to connect server localhost:7777
 Message "back mir eine Pizza" submitted
 Server responded: Command "back" unknown
-Client is trying to connect server localhost:7777
 Please enter your command ...
 ```
 Von der Serverseite folgendermaßen:
@@ -169,12 +166,11 @@ Der folgende Testfall soll folgendes zeigen:
 
 Von der Clientseite folgendermaßen:
 ```
-Client is trying to connect server localhost:7777
 Please enter your command ...
 SAVE NACHRICHT
+Client is trying to connect server localhost:7777
 Message "SAVE NACHRICHT" submitted
 Server responded: FAILED
-Client is trying to connect server localhost:7777
 Please enter your command ...
 ```
 
@@ -190,4 +186,47 @@ Disconnecting current client
 Client disconnected
 ```
 
+### Testfall 7 - Mehr als ein Client wollen sich verbinden
+
+Der folgende Testfall soll folgendes zeigen:
+- Client blockiert Server so kurz wie möglich (erst nach Befehlseingabe)
+
+Von der Clientseite (1) folgendermaßen:
+```
+Please enter your command ...
+SAVE Nachricht von Client 1 
+Client is trying to connect server localhost:7777
+Message "SAVE Nachricht von Client 1 " submitted
+Server responded: KEY 261156229
+```
+
+Von der Clientseite (2) folgendermaßen:
+```
+Please enter your command ...
+SAVE Nachricht von Client 2
+Client is trying to connect server localhost:7777
+Message "SAVE Nachricht von Client 2" submitted
+Server responded: KEY 141671968
+```
+
+Von der Serverseite:
+````
+Waiting for client
+Client connected
+Waiting for message from client
+Message form client: SAVE Nachricht von Client 2
+File 141671968 generated with following content: Nachricht von Client 2
+Disconnecting current client
+Client disconnected
+====================================
+Waiting for client
+Client connected
+Waiting for message from client
+Message form client: SAVE Nachricht von Client 1 
+File 261156229 generated with following content: Nachricht von Client 1 
+Disconnecting current client
+Client disconnected
+====================================
+Waiting for client
+````
 
