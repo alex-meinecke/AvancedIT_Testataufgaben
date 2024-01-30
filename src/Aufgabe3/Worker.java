@@ -6,29 +6,16 @@ import java.net.DatagramSocket;
 
 public class Worker implements Runnable {
 
-    private DatagramPacket message;
-    private DatagramSocket socket;
-
     private Action currentAction;
 
-    WorkerPool2 currentWorkerPool;
+    private WorkerPool currentWorkerPool;
 
-    //private ReaderWriterMonitor readerWriterMonitor = new ReaderWriterMonitor();
-
-    Worker(WorkerPool2 currentWorkerPool){
+    Worker(WorkerPool currentWorkerPool){
         this.currentWorkerPool = currentWorkerPool;
-        //this.readerWriterMonitor = readerWriterMonitor;
     }
 
-    Worker(DatagramPacket message, DatagramSocket socket, WorkerPool currentWorkerPool2){
-        this.currentWorkerPool = currentWorkerPool;
-        this.message = message;
-        this.socket = socket;
-    }
-
-    public void setServerTask(ServerTask serverTask) {
-        this.message = serverTask.getClientMessage();
-        this.socket = serverTask.getServerDatagramSocket();
+    public void setAction(Action newAction){
+        this.currentAction = newAction;
     }
 
     public Action getCurrentAction(){
@@ -37,19 +24,12 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Worker has started to process ServerTask");
+        System.out.println("Worker has started to process Action: " + currentAction.getCommand());
 
-        String extractedMessage = new String(message.getData(), 0, message.getLength());
+        String response = MyFile.handleAction(currentAction);
 
-        System.out.println("Message from client: " + extractedMessage);
-
-        currentAction = Action.generateAction(extractedMessage);
-
-        String text = MyFile.handleAction(currentAction);
-
-
-        System.out.println("Worker prepared message to client: " + text);
-        DatagramPacket datagramPacket = new DatagramPacket(text.getBytes(), text.length(), message.getAddress(), message.getPort());
+        System.out.println("Worker prepared message for client: " + response);
+        DatagramPacket datagramPacket = new DatagramPacket(response.getBytes(), response.length(), currentAction.getClientAddress(), currentAction.getClientPort());
 
         try {
             DatagramSocket datagramSocket = new DatagramSocket();

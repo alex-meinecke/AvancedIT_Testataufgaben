@@ -11,7 +11,6 @@ import static java.lang.Thread.sleep;
 public class MyFile {
 
     private static String PATH = "/Users/I569702/Documents/AdvancedIT/Advanced_IT_Testataufgaben";
-    //private static ReaderWriterMonitor readerWriterMonitor = new ReaderWriterMonitor();
 
     public static String handleAction(Action currentAction) {
         int fileLine = 0;
@@ -22,7 +21,9 @@ public class MyFile {
             fileLine = Integer.valueOf(currentAction.getContent()[1].trim());
         } catch (NumberFormatException e) {
             System.err.println(e);
-
+        } catch (IndexOutOfBoundsException e){
+            System.out.println(e);
+            fileLine = 0;
         }
 
         switch (command) {
@@ -126,7 +127,7 @@ public class MyFile {
         }
         //Künstliche Verzögerung für Testfälle:
         try {
-            sleep(30000);
+            sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
