@@ -6,33 +6,42 @@ import java.net.DatagramSocket;
 
 public class Worker implements Runnable {
 
+    // Aktuelle Action
     private Action currentAction;
 
+    // Workerpool für die Selbstrückführung am Ende
     private WorkerPool currentWorkerPool;
 
+    // Konstruktor
     Worker(WorkerPool currentWorkerPool){
         this.currentWorkerPool = currentWorkerPool;
     }
 
+    // Übergabe der zu bearbeitenden Action (wird vom Dispatcher gesetzt)
     public void setAction(Action newAction){
         this.currentAction = newAction;
     }
 
+    // Rückgabe der aktuell zu bearbeitenden Action
     public Action getCurrentAction(){
         return currentAction;
     }
 
+    // Ausführung zur 'Lebenszeit' eines Threads
     @Override
     public void run() {
         System.out.println("Worker has started to process Action: " + currentAction.getCommand());
 
-        String response = MyFile.handleAction(currentAction);
+        // Generierung der Response mit der statischen MyFile-Klasse
+        String response = ActionHandler.handleFileAction(currentAction);
 
         System.out.println("Worker prepared message for client: " + response);
+        // Vorbereitung des Antwortpakets an den Client
         DatagramPacket datagramPacket = new DatagramPacket(response.getBytes(), response.length(), currentAction.getClientAddress(), currentAction.getClientPort());
 
         try {
             DatagramSocket datagramSocket = new DatagramSocket();
+            // Senden des Antwortpaketes
             datagramSocket.send(datagramPacket);
             System.out.println("Response has been sent");
 
@@ -42,6 +51,7 @@ public class Worker implements Runnable {
         }
 
         System.out.println("Worker has finished and is adding himself back to the worker pool");
+        // Selbstrückführung in den Workerpool
         currentWorkerPool.addFreeWorkerAndUnregisterAction(this);
     }
 

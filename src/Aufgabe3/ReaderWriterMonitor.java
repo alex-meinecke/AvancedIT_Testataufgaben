@@ -14,9 +14,8 @@ public class ReaderWriterMonitor {
         System.out.println("Trying to start reading operation for " + fileName);
         // Wenn gerade ein Schreiber auf der Datei registriert ist, muss der Leser warten (SCHREIBERPRIORITÄT)
         while (isFileWriterActive(fileName)){
-            System.out.println("A prioritized writing operation is currently executed on " + fileName + ". Waiting for finishing.");
             try {
-                System.out.println("Waiting for writer on file " + fileName + " to finish.");
+                System.out.println("READ-Operation waits for writer on file " + fileName + " to finish.");
                 wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -26,7 +25,7 @@ public class ReaderWriterMonitor {
         // (Es können mehrmals die gleichen Dateinamen in der Liste sein,
         // da mehrere Leseoperationen zugleich auf einer Datei ausgeführt werden können)
         filesCurrentlyUsedForReading.add(fileName);
-        System.out.println("Reading operation on " + fileName + " is registered.");
+        System.out.println("READ-operation on " + fileName + " is registered and is allowed to start.");
     }
 
     // Beenden eines Lese-Prozesses
@@ -46,33 +45,46 @@ public class ReaderWriterMonitor {
     public synchronized void startWriting(String fileName){
         System.out.println("Trying to start writing operation for " + fileName);
 
-        // Falls
-        // !!! a) zufällig noch eine Leseoperation auf der Datei registriert ist () oder
-        // b) zufällig noch eine andere Schreibeoperation aktiv ist
-        // muss der Schreiber warten um Datenkonsistenz zu wahren
-
-        //tep. removed: isFileReaderActive(fileName) |
+        // Falls zufällig noch eine andere Schreibeoperation aktiv ist,
+        // muss der Schreiber warten, um Datenkonsistenz zu wahren
         while (isFileWriterActive(fileName)){
-            System.out.println("A prioritized reading operation is currently executed on " + fileName + ". Waiting for finishing...");
             try {
-                System.out.println("Waiting for writer or reader on file " + fileName + " to finish.");
+                System.out.println("WRITE-Operation waits for writer on file " + fileName + " to finish.");
                 wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
+        // Registrierung des Schreibeprozesses
+        // Ab jetzt können keine weiteren Leseprozesse registriert werden
         filesCurrentlyUsedForWriting.add(fileName);
-        System.out.println("Writing operation on " + fileName + " is registered.");
+
+        // Falls zufällig noch aktive Leseoperationen auf die Datei registriert sind,
+        // muss der Schreiber warten, um Datenkonsistenz zu wahren
+        while (isFileReaderActive(fileName)){
+            try {
+                System.out.println("WRITE-Operation waits for reader on file " + fileName + " to finish.");
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        System.out.println("WRITE-Operation on " + fileName + " is registered and is allowed to start.");
     }
 
     // Beenden eines Schreibe-Prozesses
     public synchronized void endWriting(String fileName){
+        // Dateiname für aktiven Schreibeprozess wird aus der Liste ausgetragen
         filesCurrentlyUsedForWriting.remove(fileName);
         System.out.println("Writing operation on " + fileName + " is deleted. All waiting operations are getting notified.");
         notifyAll();
     }
 
+
+    // isActive-Methoden prüfen, ob sich jeweils registrierte WRITE- oder READ-Operationen
+    // in den jeweiligen Listen befinden
     public synchronized Boolean isFileWriterActive(String fileName){
         return filesCurrentlyUsedForWriting.contains(fileName);
     }

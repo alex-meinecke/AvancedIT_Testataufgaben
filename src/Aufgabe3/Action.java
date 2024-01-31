@@ -2,7 +2,11 @@ package Aufgabe3;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-
+/*
+    Eine Action wird vom Dispacher erstellt und dient zur Bündelung aller die für die Weiterverarbeitung
+    einer Aufgabe benötigten Daten.
+    Sie wird für das Leser-Schreiberproblem in der sowie für die Operationsverarbeitung in der MyFile-Klasse verwendet
+ */
 public class Action {
     // Command wie "READ" oder "WRITE"
     private String command;
