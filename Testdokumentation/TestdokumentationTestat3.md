@@ -318,6 +318,38 @@ muss bei der nächten WRITE-Registrierung gewartet werden, bis die WRITE-Operati
 
 ### 3. Testfälle für Erzeuger-Verbraucher-Problem
 
+#### 3.1 Testfall - Workerpool zwischenzeitig leer
+
+Da der Workerpool zwischenzeitig bei einer höheren Anfragelast komplett leer ist, müssen die Aufgaben des Dispachers warten.
+
+Durchführung: Der "SpamClient" wird mehrmals parallel nebeneinander gestartet, um den Workerpool mit den 8 Workern komplett auszulasten.
+Die künstliche Verzögerung in der MyFile-Klasse für Leseoperationen wird auf 30 sek gesetzt.
 
 
+``` java
+//Künstliche Verzögerung für Testfälle:
+try {
+    sleep(3000);
+} catch (InterruptedException e) {
+    throw new RuntimeException(e);
+}
+```
+
+````
+Added new ServerTask to dispatcher
+Getting new free worker from worker pool
+Registering operation: READ on file test
+Trying to start reading operation for test
+READ-operation on test is registered and is allowed to start.
+=> Worker Pool is empty. Waiting for worker...
+Content from test loaded.
+Worker 7 prepared message for client: 1
+Response has been sent
+Worker  7 has finished and is adding himself back to the worker pool
+Unregistering action: READ on file test
+Reading operation on test is deleted. All waiting operations are getting notified.
+=> Worker has been added back to pool (and the next waiting server tasks will be resumed)
+=> Returning free worker from worker pool for operation: READ
+````
+Dispatcher muss so lange für Worker warten, bis sich wieder einer selbst eingliedert.
 
