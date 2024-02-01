@@ -27,7 +27,7 @@ public class Server {
                 // Auf Nachricht von einem Client warten
                 datagramSocket.receive(message);
 
-                //Nachricht direkt an den Dispatcher weitergeben
+                // Nachricht direkt an den Dispatcher weitergeben
                 System.out.println("Added new ServerTask to dispatcher");
                 dispatcher.addNewServerTask(message);
 
