@@ -2,10 +2,18 @@ package Aufgabe3;
 
 import java.net.DatagramPacket;
 
-public class Dispatcher {
+public class Dispatcher implements Runnable {
+
+
 
     //Generieren eines Workerpools
-    private WorkerPool workerPool = new WorkerPool();
+    private WorkerPool workerPool;
+    private DatagramPacket newClientMessage;
+
+    Dispatcher(WorkerPool workerPool, DatagramPacket newClientMessage){
+        this.workerPool = workerPool;
+        this.newClientMessage = newClientMessage;
+    }
 
     //Anmeldung einer neuen Aufgabe (Action)
     public void addNewServerTask(DatagramPacket newClientMessage){
@@ -31,4 +39,8 @@ public class Dispatcher {
         System.out.println("Dispatched");
     }
 
+    @Override
+    public void run() {
+        addNewServerTask(newClientMessage);
+    }
 }

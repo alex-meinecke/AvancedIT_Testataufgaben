@@ -8,10 +8,11 @@ import java.net.SocketException;
 public class Server {
     // Vorgegebener Port
     private static int PORT = 5999;
-    // Generierung eines Dispatchers
-    private static Dispatcher dispatcher = new Dispatcher();
+
     // DatagramSocket für den Server
     private static DatagramSocket datagramSocket;
+
+    private static WorkerPool workerPool = new WorkerPool();
 
     public static void main(String[] args) {
         try {
@@ -29,7 +30,9 @@ public class Server {
 
                 // Nachricht direkt an den Dispatcher weitergeben
                 System.out.println("Added new ServerTask to dispatcher");
-                dispatcher.addNewServerTask(message);
+
+                Dispatcher dispatcher = new Dispatcher(workerPool, message);
+                new Thread(dispatcher).start();
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
