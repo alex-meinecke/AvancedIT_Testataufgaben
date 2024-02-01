@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 import static java.lang.Thread.sleep;
 
-public class SpamClientWRW {
+public class SpamClientRWRW {
 
     private static int PORT_SERVER  = 5999;
 
@@ -33,7 +33,7 @@ public class SpamClientWRW {
                 String writeMessage = "WRITE test,1,1";
                 String readMessage = "READ test,1";
 
-                String[] messages = {writeMessage, readMessage, writeMessage};
+                String[] messages = {readMessage, writeMessage, readMessage, writeMessage};
 
                 for (int i = 0; i < messages.length; i++) {
                     sleep(1000);

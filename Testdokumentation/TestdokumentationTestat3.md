@@ -11,7 +11,7 @@ Die Implementation ist ausführlich kommentiert. Um den Code zu testen, bitte Fo
 
 ## Skizzierung des der Umsetzung für das Verständnis der folgenden Testfälle
 
-Wenn der Server eine Nachricht N1 von einem Client empfängt, wird diese erstmal an den Dispatcher weitergegeben. Dieser entschlüsselt
+Wenn der Server eine Nachricht von einem Client empfängt, wird diese erstmal an einen jeweils eigenen Dispatcher weitergegeben. Dieser entschlüsselt
 erstmal die Nachricht und wandelt sie in eine Action um (bspw. "WRITE test,1,hallo"). Anschließend spricht der Dispatcher den
 Workerpool an und die Operation der Action auf eine bestimmte Datei wird beim ReaderWriterMonitor angemeldet. 
 Im Falle von "WRITE", erfolgt die Anmeldung nur, wenn keine aktive READ- oder WRITE-Operation auf die gleiche Datei zugreift.
@@ -211,7 +211,89 @@ Nachdem diese abgemeldet wurde, bekommt das WRITE die Starterlaubnis.
 #### 2.2.1 Testfall - Leser und Schreiber auf eine Datei mit Hervorhebung der Schreiberpriorität
 
 Um das Vorliegen der Schreiberpriorität nochmal zu verdeutlichen, habe ich mich entschieden einen Testfall zu ergänzen.
-Während 
+
+Durchführung: Ich habe einen weiteren Testclient names "SpamClientRWRW" erstellt, der unmittelbar hintereinander 
+erst einen Lese-, dann einen Schreibe-, dann wieder einen Lese- und dann am Ende einen Schreibebefehl schickt. 
+Diese sollten nach dem zweiten Leser-Schreiber-Problem folgend ausgeführt werden: Lesen, Schreiben, Schreiben, Lesen
+
+
+```
+Added new ServerTask to dispatcher
+Getting new free worker from worker pool
+=> Registering operation: READ on file test
+Trying to start reading operation for test
+READ-operation on test is registered and is allowed to start.
+Returning free worker from worker pool for operation: READ
+Dispatching action and client information to returned free worker
+Dispatched
+Worker 4 has started to process Action: READ
+Content from test loaded.
+Added new ServerTask to dispatcher
+Getting new free worker from worker pool
+Registering operation: WRITE on file test
+Trying to start writing operation for test
+=> WRITE-Operation waits for reader on file test to finish.
+Added new ServerTask to dispatcher
+Getting new free worker from worker pool
+Registering operation: READ on file test
+Trying to start reading operation for test
+=> READ-Operation waits for writer on file test to finish.
+Worker 4 prepared message for client: 1
+Response has been sent
+Worker  4 has finished and is adding himself back to the worker pool
+Unregistering action: READ on file test
+Reading operation on test is deleted. All waiting operations are getting notified.
+Worker has been added back to pool (and the next waiting server tasks will be resumed)
+=> WRITE-Operation on test is registered and is allowed to start.
+Returning free worker from worker pool for operation: WRITE
+READ-Operation waits for writer on file test to finish.
+Dispatching action and client information to returned free worker
+Dispatched
+Worker 5 has started to process Action: WRITE
+Content from test loaded.
+Added new ServerTask to dispatcher
+Getting new free worker from worker pool
+Registering operation: WRITE on file test
+Trying to start writing operation for test
+=> Preregistration for file : test since the Writer is still busy
+WRITE-Operation waits for writer on file test to finish.
+Content from test loaded.
+Worker 5 prepared message for client: New line content: 1
+Response has been sent
+Worker  5 has finished and is adding himself back to the worker pool
+Unregistering action: WRITE on file test
+Writing operation on test is deleted. All waiting operations are getting notified.
+Worker has been added back to pool (and the next waiting server tasks will be resumed)
+READ-Operation waits for writer on file test to finish.
+=> WRITE-Operation on test is registered and is allowed to start.
+Returning free worker from worker pool for operation: WRITE
+Dispatching action and client information to returned free worker
+Dispatched
+Worker 6 has started to process Action: WRITE
+Content from test loaded.
+Content from test loaded.
+Worker 6 prepared message for client: New line content: 1
+Response has been sent
+Worker  6 has finished and is adding himself back to the worker pool
+=> Unregistering action: WRITE on file test
+Writing operation on test is deleted. All waiting operations are getting notified.
+Worker has been added back to pool (and the next waiting server tasks will be resumed)
+=> READ-operation on test is registered and is allowed to start.
+Returning free worker from worker pool for operation: READ
+Dispatching action and client information to returned free worker
+Dispatched
+Worker 7 has started to process Action: READ
+Content from test loaded.
+Worker 7 prepared message for client: 1
+Response has been sent
+Worker  7 has finished and is adding himself back to the worker pool
+Unregistering action: READ on file test
+Reading operation on test is deleted. All waiting operations are getting notified.
+Worker has been added back to pool (and the next waiting server tasks will be resumed)
+```
+
+Erläuterung: Wie erwartet startet als Erstes die erste Leseoperation (L1). Die darauffolgende Schreibeoperation (S2) muss noch warten, bis L1 fertig ist.
+S2 kann danach starten und blockiert direkt L3, die auch starten möchte. Danach kommt direkt die letzte Schreibeoperation (S4). Erst danach kann L3 starten.
 
 
 #### 2.3 Testfall - Leser und Schreiber auf unterschiedliche Dateien
