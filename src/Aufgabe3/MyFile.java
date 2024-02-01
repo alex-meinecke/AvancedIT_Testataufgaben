@@ -111,12 +111,12 @@ public class MyFile {
         }
         //Künstliche Verzögerung für Testfälle:
         try {
-            sleep(3000);
+            sleep(15000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         printWriter.flush();
-    }
+        }
 
 
     // Einlesen einer Datei
